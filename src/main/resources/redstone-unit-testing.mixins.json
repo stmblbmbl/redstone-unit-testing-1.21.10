@@ -3,7 +3,7 @@
 	"package": "rs_unit_test.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
-		"ExampleMixin"
+		"ServerMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
