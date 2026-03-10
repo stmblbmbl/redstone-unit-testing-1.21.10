@@ -1,9 +1,11 @@
 package rs_unit_test;
 
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.BlockPos;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,10 +81,92 @@ public class CommandManager {
             dispatcher.register(literal("rut").then(literal("run").then(argument("name", StringArgumentType.string())
                     .executes(context -> {
                         String name = StringArgumentType.getString(context, "name");
-                        this.testManager.runTest(name);
+                        this.testManager.runTest(name, context.getSource().getServer());
                         return 1;
                     })
             )));
+            dispatcher.register(literal("rut").then(literal("listAssertions")
+                    .executes(context -> {
+                        this.testManager.listAssertions(context);
+                        return 1;
+                    })
+            ));
+            dispatcher.register(literal("rut").then(literal("listAssertions").then(argument("name", StringArgumentType.string())
+                    .executes(context -> {
+                        this.testManager.listAssertions(context, StringArgumentType.getString(context, "name"));
+                        return 1;
+                    }))
+            ));
+            dispatcher.register(literal("rut").then(literal("deleteAssertion")
+                    .then(argument("x", IntegerArgumentType.integer())
+                    .then(argument("y", IntegerArgumentType.integer())
+                    .then(argument("z", IntegerArgumentType.integer())
+                    .executes(context -> {
+                        BlockPos pos = new BlockPos(IntegerArgumentType.getInteger(context, "x"), IntegerArgumentType.getInteger(context, "y"), IntegerArgumentType.getInteger(context, "z"));
+                        this.testManager.deleteAssertion(pos);
+                        return 1;
+                    }))))
+            ));
+            dispatcher.register(literal("rut").then(literal("deleteAssertion")
+                    .then(argument("x", IntegerArgumentType.integer())
+                    .then(argument("y", IntegerArgumentType.integer())
+                    .then(argument("z", IntegerArgumentType.integer())
+                    .then(argument("name", StringArgumentType.string())
+                    .executes(context -> {
+                        BlockPos pos = new BlockPos(IntegerArgumentType.getInteger(context, "x"), IntegerArgumentType.getInteger(context, "y"), IntegerArgumentType.getInteger(context, "z"));
+                        this.testManager.deleteAssertion(context, pos, StringArgumentType.getString(context, "name"));
+                        return 1;
+                    })))))
+            ));
+            dispatcher.register(literal("rut").then(literal("listInputs")
+                    .executes(context -> {
+                        this.testManager.listTestInputs(context);
+                        return 1;
+                    })
+            ));
+            dispatcher.register(literal("rut").then(literal("listInputs").then(argument("name", StringArgumentType.string())
+                    .executes(context -> {
+                        this.testManager.listTestInputs(context, StringArgumentType.getString(context, "name"));
+                        return 1;
+                    }))
+            ));
+            dispatcher.register(literal("rut").then(literal("deleteInput")
+                    .then(argument("x", IntegerArgumentType.integer())
+                            .then(argument("y", IntegerArgumentType.integer())
+                                    .then(argument("z", IntegerArgumentType.integer())
+                                            .executes(context -> {
+                                                BlockPos pos = new BlockPos(IntegerArgumentType.getInteger(context, "x"), IntegerArgumentType.getInteger(context, "y"), IntegerArgumentType.getInteger(context, "z"));
+                                                this.testManager.deleteTestInput(pos);
+                                                return 1;
+                                            }))))
+            ));
+            dispatcher.register(literal("rut").then(literal("deleteInput")
+                    .then(argument("x", IntegerArgumentType.integer())
+                            .then(argument("y", IntegerArgumentType.integer())
+                                    .then(argument("z", IntegerArgumentType.integer())
+                                            .then(argument("name", StringArgumentType.string())
+                                                    .executes(context -> {
+                                                        BlockPos pos = new BlockPos(IntegerArgumentType.getInteger(context, "x"), IntegerArgumentType.getInteger(context, "y"), IntegerArgumentType.getInteger(context, "z"));
+                                                        this.testManager.deleteTestInput(context, pos, StringArgumentType.getString(context, "name"));
+                                                        return 1;
+                                                    })))))
+            ));
+            dispatcher.register(literal("rut").then(literal("setInputTick")
+                    .then(argument("index", IntegerArgumentType.integer())
+                            .then(argument("tick", IntegerArgumentType.integer())
+                                    .executes(context -> {
+                                        this.testManager.currentTest.setInputTick(IntegerArgumentType.getInteger(context, "index"), IntegerArgumentType.getInteger(context, "tick"));
+                                        return 1;
+                                    })))
+            ));
+            dispatcher.register(literal("rut").then(literal("setAssertionTick")
+                    .then(argument("index", IntegerArgumentType.integer())
+                            .then(argument("tick", IntegerArgumentType.integer())
+                                    .executes(context -> {
+                                        this.testManager.currentTest.setAssertionTick(IntegerArgumentType.getInteger(context, "index"), IntegerArgumentType.getInteger(context, "tick"));
+                                        return 1;
+                                    })))
+            ));
         });
     }
 }

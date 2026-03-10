@@ -1,5 +1,8 @@
 package rs_unit_test;
 
+import com.mojang.brigadier.context.CommandContext;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.math.BlockPos;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,8 +45,66 @@ public class TestManager {
     public Set<String> listTestNames() {
         return tests.keySet();
     }
-    public boolean runTest(String name) {
-        tests.get(name).runTest();
-        return true;
+    public void runTest(String name, MinecraftServer server) {
+        tests.get(name).runTest(server);
+    }
+    public void listAssertions() {
+        currentTest.listAssertions();
+    }
+    public void listAssertions(String name) {
+        tests.get(name).listAssertions();
+    }
+    public void listAssertions(CommandContext<ServerCommandSource> context) {
+        currentTest.listAssertions(context);
+    }
+    public void listAssertions(CommandContext<ServerCommandSource> context, String name) {
+        tests.get(name).listAssertions(context);
+    }
+    public void deleteAssertion(BlockPos pos) {
+        currentTest.deleteAssertion(pos);
+    }
+    public void deleteAssertion(BlockPos pos, String name) {
+        tests.get(name).deleteAssertion(pos);
+    }
+    public void deleteAssertion(CommandContext<ServerCommandSource> context, BlockPos pos) {
+        currentTest.deleteAssertion(context, pos);
+    }
+    public void deleteAssertion(CommandContext<ServerCommandSource> context, BlockPos pos, String name) {
+        tests.get(name).deleteAssertion(context, pos);
+    }
+    public void listTestInputs() {
+        currentTest.listInputs();
+    }
+    public void listTestInputs(String name) {
+        tests.get(name).listInputs();
+    }
+    public void listTestInputs(CommandContext<ServerCommandSource> context) {
+        currentTest.listInputs(context);
+    }
+    public void listTestInputs(CommandContext<ServerCommandSource> context, String name) {
+        tests.get(name).listInputs(context);
+    }
+    public void deleteTestInput(BlockPos pos) {
+        currentTest.deleteInput(pos);
+    }
+    public void deleteTestInput(BlockPos pos, String name) {
+        tests.get(name).deleteInput(pos);
+    }
+    public void deleteTestInput(CommandContext<ServerCommandSource> context, BlockPos pos) {
+        currentTest.deleteInput(context, pos);
+    }
+    public void deleteTestInput(CommandContext<ServerCommandSource> context, BlockPos pos, String name) {
+        tests.get(name).deleteInput(context, pos);
+    }
+    public void newTestInput(TestInput input) {
+        LOGGER.info("New input {}", input);
+        if (currentTest != null) {
+            currentTest.addInput(input);
+        }
+    }
+    public void removeInput(BlockPos pos) {
+        if (currentTest != null) {
+            currentTest.removeInput(pos);
+        }
     }
 }

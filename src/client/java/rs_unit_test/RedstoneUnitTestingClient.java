@@ -53,7 +53,7 @@ public class RedstoneUnitTestingClient implements ClientModInitializer {
 			if (hand != Hand.MAIN_HAND) return ActionResult.PASS;
 			ItemStack currentHeld = player.getMainHandStack();
 			// Only sends packet if holding a wooden axe called Wand
-			if (currentHeld.getItem() == Items.WOODEN_AXE && Objects.equals(currentHeld.getItem().getName().toString(), "Wand")) {
+			if (currentHeld.getItem() == Items.WOODEN_AXE) {
 				ClickedBlockPayload payload = new ClickedBlockPayload(hitResult, ClickType.LEFT);
 				ClientPlayNetworking.send(payload);
 				// Swing hand but don't break block
